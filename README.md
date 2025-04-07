@@ -83,10 +83,10 @@ miniblog/
 └── database.sql       → Database backup file  
 
 
-![Admin Dashboard](screenshots/image1.png)
-![Category Management](screenshots/image2.png)
-![Add New Post](screenshots/image3.png)
-![Admin Comment Approval](screenshots/image4.png)
-![Homepage](screenshots/image5.png)
-![Post Detail](screenshots/image6.png)
-![Add Comment](screenshots/image7.png)
+![Admin Dashboard](https://github.com/eraykarakasli/miniblog/blob/main/screenshots/image1.png?raw=true)
+![Category Management](https://github.com/eraykarakasli/miniblog/blob/main/screenshots/image2.png?raw=true)
+![Add New Post](https://github.com/eraykarakasli/miniblog/blob/main/screenshots/image3.png?raw=true)
+![Comment Approval](https://github.com/eraykarakasli/miniblog/blob/main/screenshots/image4.png?raw=true)
+![Homepage](https://github.com/eraykarakasli/miniblog/blob/main/screenshots/image5.png?raw=true)
+![Post Detail](https://github.com/eraykarakasli/miniblog/blob/main/screenshots/image6.png?raw=true)
+![Add Comment](https://github.com/eraykarakasli/miniblog/blob/main/screenshots/image7.png?raw=true)
