@@ -1,54 +1,57 @@
 # 📝 MiniBlog
 
-MiniBlog, PHP ve MySQL ile geliştirilmiş basit bir blog sistemidir. Admin paneli üzerinden yazı, kategori ve yorum yönetimi yapılabilir. Ziyaretçiler ise blog yazılarını okuyabilir ve yorum yapabilirler.
+MiniBlog is a simple blog system developed with PHP and MySQL.  
+It includes an admin panel for managing posts, categories, and comments.  
+Visitors can read blog posts and submit comments.
 
 ---
 
-## 🚀 Özellikler
+## 🚀 Features
 
-- Admin girişi ve güvenli panel
-- Yazı ekleme, düzenleme, silme
-- Görsel yükleme desteği
-- Dinamik kategori yönetimi
-- Yorum sistemi (onaylı)
-- Görüntülenme sayacı
-- Responsive tasarım (Bootstrap 5)
-- Ziyaretçi ve admin arayüzleri
+- Admin login and secure panel  
+- Create, update, and delete posts  
+- Image upload support  
+- Dynamic category management  
+- Comment system (with approval)  
+- View counter for posts  
+- Responsive design (Bootstrap 5)  
+- Separate admin and visitor interfaces
 
 ---
 
-## ⚙️ Kurulum
+## ⚙️ Installation
 
-
-### 1. Projeyi İndir
+### 1. Clone the Project
 
 ```bash
 git clone https://github.com/eraykarakasli/miniblog.git
 
 
-### 2. Veritabanını Kur
+## 2. Set Up the Database
 
-1. XAMPP/WAMP başlatın ve phpMyAdmine girin.
-2. Yeni bir veritabanı oluşturun: miniblog
-3. Bu repodaki database.sql dosyasını içe aktarın (Import sekmesinden).
+1. Start XAMPP or WAMP and open phpMyAdmin.  
+2. Create a new database named: `miniblog`  
+3. Import the `database.sql` file from this repository via the **Import** tab.  
 
 
-### 3. Veritabanı Bağlantısı Ayarı
+### 3. Database Connection Configuration
 
-admin/includes/config.php dosyasını açın ve aşağıdaki bilgilerin doğru olduğuna emin olun:
+Open the file `admin/includes/config.php` and make sure the following settings are correct:
+
+```php
 $baglanti = new mysqli("localhost", "root", "", "miniblog");
 
 
-### 4. Admin Girişi
+## 4. Admin Login
 
-Kullanıcı adı: admin
-Şifre: 123456 (veya kendi belirlediğiniz şifre bkz:"admin/admin_ekle.php")
+Username: `admin`  
+Password: `123456` (or your own password – see: `admin/admin_ekle.php`)
 
-Admin paneli için şu adresi kullan:
+To access the admin panel, visit:  
 http://localhost/miniblog/admin/login.php
 
 
-### 📁 Proje Yapısı
+## 📁 Project Structure
 
 miniblog/
 │
@@ -73,10 +76,17 @@ miniblog/
 │       ├── visitor_footer.php
 │       └── visitor_header.php
 │
-├── uploads/           → Görsellerin yüklendiği klasör
-├── index.php          → Ziyaretçi ana sayfası
-├── post.php           → Yazı detay sayfası
-├── README.md          → Bu dosya
-└── database.sql       → Veritabanı yedeği
+├── uploads/           → Folder for uploaded images  
+├── index.php          → Public homepage  
+├── post.php           → Blog post detail page  
+├── README.md          → This documentation file  
+└── database.sql       → Database backup file  
 
 
+![Admin Dashboard](screenshots/image1.png)
+![Category Management](screenshots/image2.png)
+![Add New Post](screenshots/image3.png)
+![Admin Comment Approval](screenshots/image4.png)
+![Homepage](screenshots/image5.png)
+![Post Detail](screenshots/image6.png)
+![Add Comment](screenshots/image7.png)
