@@ -82,6 +82,7 @@ miniblog/
 ├── README.md          → This documentation file  
 └── database.sql       → Database backup file  
 
+```
 
 ![Admin Dashboard](https://github.com/eraykarakasli/miniblog/blob/main/screenshots/image1.png?raw=true)
 ![Category Management](https://github.com/eraykarakasli/miniblog/blob/main/screenshots/image2.png?raw=true)
