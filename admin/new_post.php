@@ -29,8 +29,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $baslik = $baglanti->real_escape_string($_POST["baslik"]);
     $kategori = $baglanti->real_escape_string($_POST["kategori"]);
     $icerik = $baglanti->real_escape_string($_POST["icerik"]);
+    function slugYap($metin)
+    {
+        $metin = strtolower(trim($metin));
+        $metin = preg_replace('/[^a-z0-9ğüşıöç\s-]/u', '', $metin);
+        $metin = preg_replace('/[\s-]+/', '-', $metin);
+        return $metin;
+    } 
 
-    $sorgu = "INSERT INTO posts (baslik, kategori, icerik, gorsel, durum) VALUES ('$baslik', '$kategori', '$icerik', '$gorsel_yolu', '$durum')";
+    $slug = slugYap($baslik);
+
+    $sorgu = "INSERT INTO posts (baslik, kategori, icerik, gorsel, slug, durum) 
+VALUES ('$baslik', '$kategori', '$icerik', '$gorsel_yolu', '$slug', '$durum')";
 
     if ($baglanti->query($sorgu)) {
         $mesaj = "✅ Yazı başarıyla eklendi!";

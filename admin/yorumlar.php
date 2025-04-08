@@ -1,20 +1,20 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
 include "./includes/header.php";
 include "./includes/config.php";
 include "./includes/admin_kontrol.php";
 
-//yorum onaylama
+// Yorum onaylama
 if (isset($_GET["onayla"])) {
     $id = (int) $_GET["onayla"];
-    $baglanti->query("UPDATE comments SET onay = 1 WHERE id =$id");
+    $kontrol = $baglanti->query("SELECT id FROM comments WHERE id = $id");
+    if ($kontrol->num_rows > 0) {
+        $baglanti->query("UPDATE comments SET onay = 1 WHERE id = $id");
+    }
     header("Location: yorumlar.php");
     exit;
 }
 
-//yorum silme
+// Yorum silme
 if (isset($_GET["sil"])) {
     $id = (int) $_GET["sil"];
     $baglanti->query("DELETE FROM comments WHERE id = $id");
@@ -22,6 +22,7 @@ if (isset($_GET["sil"])) {
     exit;
 }
 
+// Yorumları çek
 $yorumlar = $baglanti->query("
     SELECT comments.*, posts.baslik 
     FROM comments 
@@ -36,15 +37,22 @@ $yorumlar = $baglanti->query("
     <ul class="list-group">
         <?php while ($y = $yorumlar->fetch_assoc()): ?>
             <li class="list-group-item">
-                <strong><?= htmlspecialchars($y["isim"]) ?></strong> → 
-                <em><?= htmlspecialchars($y["baslik"]) ?></em> <br>
-                <?= nl2br(htmlspecialchars($y["yorum"])) ?>
-                <div class="small text-muted"><?= $y["tarih"] ?></div>
-                <div class="mt-2">
-                    <?php if (!$y["onay"]): ?>
-                        <a href="?onayla=<?= $y["id"] ?>" class="btn btn-success btn-sm">Onayla</a>
-                    <?php endif; ?>
-                    <a href="?sil=<?= $y["id"] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Yorumu silmek istiyor musunuz?')">Sil</a>
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <strong><?= htmlspecialchars($y["isim"]) ?></strong> → 
+                        <em><?= htmlspecialchars($y["baslik"]) ?></em> <br>
+                        <?= nl2br(htmlspecialchars($y["yorum"])) ?>
+                        <div class="small text-muted"><?= $y["tarih"] ?></div>
+                    </div>
+                    <div class="text-end">
+                        <?php if (!$y["onay"]): ?>
+                            <span class="badge bg-warning text-dark mb-2">Onaysız</span><br>
+                            <a href="?onayla=<?= $y["id"] ?>" class="btn btn-success btn-sm">✅ Onayla</a>
+                        <?php else: ?>
+                            <span class="badge bg-success mb-2">✔️ Onaylı</span>
+                        <?php endif; ?>
+                        <a href="?sil=<?= $y["id"] ?>" class="btn btn-danger btn-sm mt-1" onclick="return confirm('Yorumu silmek istiyor musunuz?')">🗑 Sil</a>
+                    </div>
                 </div>
             </li>
         <?php endwhile; ?>

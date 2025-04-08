@@ -9,6 +9,7 @@ if (!isset($_GET["id"])) {
     include "./includes/footer.php";
     exit;
 }
+
 $kategori_sonuc = $baglanti->query("SELECT * FROM kategoriler ORDER BY ad ASC");
 $id = (int) $_GET["id"];
 $yazi = $baglanti->query("SELECT * FROM posts WHERE id = $id")->fetch_assoc();
@@ -18,6 +19,14 @@ if (!$yazi) {
     include "./includes/footer.php";
     exit;
 }
+//slug oluşturucu
+function slugOlustur($metin)
+{
+    $metin = mb_strtolower($metin, "UTF-8");
+    $metin = preg_replace('/[^a-z0-9çğıöşü\s-]/u', '', $metin);
+    $metin = preg_replace('/[\s-]+/', '-', $metin);
+    return trim($metin, '-');
+}
 
 // güncelleme işlemi
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
@@ -25,6 +34,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $baslik = $baglanti->real_escape_string($_POST["baslik"]);
     $kategori = $baglanti->real_escape_string($_POST["kategori"]);
     $icerik = $baglanti->real_escape_string($_POST["icerik"]);
+    $slider = isset($_POST["slider"]) ? 1 : 0;
+    $slug = slugOlustur($baslik);
+
     // önceki görseli sakla
     $gorsel_yolu = $yazi["gorsel"]; // eğer yeni yüklenmezse eskiyi koru
     if (isset($_FILES["gorsel"]) && $_FILES["gorsel"]["error"] === UPLOAD_ERR_OK) {
@@ -44,7 +56,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
 
-    $guncelle = $baglanti->query("UPDATE posts SET baslik = '$baslik', kategori = '$kategori', icerik = '$icerik', gorsel = '$gorsel_yolu', durum = '$durum' WHERE id= '$id'");
+    $guncelle = $baglanti->query("UPDATE posts SET 
+    baslik = '$baslik', 
+    kategori = '$kategori', 
+    icerik = '$icerik', 
+    gorsel = '$gorsel_yolu', 
+    durum = '$durum', 
+    slider = '$slider' ,
+    slug= '$slug'
+    WHERE id = '$id'");
+
     if ($guncelle) {
         echo "<div class='alert alert-success'>Yazı başarıyla güncellendi.</div>";
         if ($gorsel_yolu !== $yazi["gorsel"] && file_exists($yazi["gorsel"])) {
@@ -55,7 +76,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     } else {
         echo "<div class='alert alert-danger'>Hata oluştu " . $baglanti->error . " </div>";
     }
+
+    header("Location: dashboard.php");
+    exit;
 }
+
+
+
 ?>
 
 <h2 class="mb-4">✏️ Yazıyı Düzenle</h2>
@@ -100,8 +127,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             <option value="yayinda" <?= $yazi["durum"] === "yayinda" ? "selected" : "" ?>>Yayında</option>
         </select>
     </div>
-
-
+    <div class="form-check mb-3">
+        <input class="form-check-input" type="checkbox" name="slider" id="slider" <?= $yazi["slider"] ? "checked" : "" ?>>
+        <label class="form-check-label" for="slider">
+            Anasayfada slider’da göster
+        </label>
+    </div>
     <div class="text-end">
         <button type="submit" class="btn btn-primary">💾 Güncelle</button>
     </div>

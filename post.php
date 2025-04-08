@@ -6,35 +6,40 @@ include "includes/visitor_header.php";
 $populer_yazilar = $baglanti->query("SELECT id, baslik, goruntulenme FROM posts WHERE durum = 'yayinda' ORDER BY goruntulenme DESC LIMIT 5");
 
 
-//id kontrolü
-if (!isset($_GET["id"])) {
-    echo "<div class='alert alert-danger'>Geçersiz bağlantı.</div>";
+if (!isset($_GET["slug"])) {
+    header("Location: 404.php");
     exit;
 }
 
-$id = (int)$_GET["id"];
+$slug = $baglanti->real_escape_string($_GET["slug"]);
+
 
 //görüntülenme sayısını 1 artır
-$baglanti->query("UPDATE posts SET goruntulenme = goruntulenme + 1 WHERE id = $id");
+$baglanti->query("UPDATE posts SET goruntulenme = goruntulenme + 1 WHERE slug = '$slug'");
+
 
 //yazıyı veritabanından al
-$yazi = $baglanti->query("SELECT * FROM posts WHERE id = $id AND durum = 'yayinda'")->fetch_assoc();
+$slug = $baglanti->real_escape_string($_GET["slug"]);
+$yazi = $baglanti->query("SELECT * FROM posts WHERE slug = '$slug' AND durum = 'yayinda'")->fetch_assoc();
 
 if (!$yazi) {
-    echo "<div class='alert alert-warning'>Yazı bulunamadı.</div>";
+    header("Location: 404.php");
     exit;
 }
+
 
 //yorum kaydetme
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["yorum"])) {
     $isim = $baglanti->real_escape_string($_POST["isim"]);
     $yorum = $baglanti->real_escape_string($_POST["yorum"]);
-    $post_id = (int) $_GET["id"];
+    $post_id = isset($_POST["post_id"]) ? (int) $_POST["post_id"] : 0;
 
-    $baglanti->query("INSERT INTO comments (post_id, isim, yorum) VALUES ($post_id, '$isim','$yorum')");
+
+    $baglanti->query("INSERT INTO comments (post_id, isim, yorum) VALUES ($post_id, '$isim', '$yorum')");
+
 
     // Yönlendirme ile tekrar gönderimi engelle
-    header("Location: post.php?id=$post_id&yorum=ok#yorum-formu");
+    header("Location: post.php?slug=" . urlencode($yazi["slug"]) . "&yorum=ok#yorum-formu");
     exit;
 }
 ?>
@@ -73,6 +78,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["yorum"])) {
         <div class="alert alert-info mt-3">Yorumunuz alındı, admin onayından sonra yayınlanacaktır.</div>
     <?php endif; ?>
     <form method="post" action="" id="yorum-formu">
+    <input type="hidden" name="post_id" value="<?= $yazi["id"] ?>">
         <div class="mb-3">
             <label>İsminiz</label>
             <input type="text" name="isim" class="form-control" required>
@@ -86,7 +92,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["yorum"])) {
 
     <h4 class="mt-5">🗨️ Yorumlar</h4>
     <?php
-    $yorumlar = $baglanti->query("SELECT * FROM comments WHERE post_id = $id AND onay = 1 ORDER BY tarih DESC");
+    $yorumlar = $baglanti->query("SELECT * FROM comments WHERE post_id = {$yazi['id']} AND onay = 1 ORDER BY tarih DESC");
 
     if ($yorumlar->num_rows > 0):
         while ($y = $yorumlar->fetch_assoc()):
