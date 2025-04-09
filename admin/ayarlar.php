@@ -3,6 +3,7 @@ include "includes/header.php";
 include "includes/config.php";
 include "includes/admin_control.php";
 
+$site_ayar_mesaj = ""; // Mesaj değişkenini tanımla
 
 //formdan gelen veriyi veri tabanına gönderme ve dosya yükleme
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
@@ -25,10 +26,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $favicon_yolu = $favicon_ad;
     }
 
-    $baglanti->query("UPDATE ayarlar SET site_baslik = '$baslik', site_aciklama = '$aciklama', logo= '$logo_yolu', favicon= '$favicon_yolu' WHERE id='1'");
-    echo "<div class='alert alert-success'> Ayarlar Başarıyla Güncellendi.</div>";
-
-   
+    $guncelle = $baglanti->query("UPDATE ayarlar SET site_baslik = '$baslik', site_aciklama = '$aciklama', logo= '$logo_yolu', favicon= '$favicon_yolu' WHERE id='1'");
+    
+    if ($guncelle) {
+        $site_ayar_mesaj = "<div class='alert alert-success'>Ayarlar Başarıyla Güncellendi.</div>";
+        // Ayarları güncelle
+        $site_ayar["site_baslik"] = $baslik;
+        $site_ayar["site_aciklama"] = $aciklama;
+        $site_ayar["logo"] = $logo_yolu;
+        $site_ayar["favicon"] = $favicon_yolu;
+    } else {
+        $site_ayar_mesaj = "<div class='alert alert-danger'>Ayarlar güncellenirken bir hata oluştu: " . $baglanti->error . "</div>";
+    }
 }
 
 // güncel ayarları çek
@@ -38,14 +47,16 @@ $ayar = $baglanti->query("SELECT * FROM ayarlar WHERE id=1")->fetch_assoc();
 
 <h2 class="mb-4">⚙️ Site Ayarlar</h2>
 
-<form action="" method="post" enctype="multipart/form-data">
+<?php if (!empty($site_ayar_mesaj)) echo $site_ayar_mesaj; ?>
+
+<form action="ayarlar.php" method="post" enctype="multipart/form-data">
     <div class="mb-3">
-        <label for="" class="form-label">Site Başlığı</label>
-        <input type="text" class="form-control" name="site_baslik" value="<?= htmlspecialchars($ayar["site_baslik"]) ?>">
+        <label for="site_baslik" class="form-label">Site Başlığı</label>
+        <input type="text" class="form-control" id="site_baslik" name="site_baslik" value="<?= htmlspecialchars($ayar["site_baslik"]) ?>">
     </div>
     <div class="mb-3">
-        <label for="" class="form-label">Site Açıklaması</label>
-        <textarea type="text" class="form-control" name="site_aciklama" rows="4"><?= htmlspecialchars($ayar["site_aciklama"]) ?></textarea>
+        <label for="site_aciklama" class="form-label">Site Açıklaması</label>
+        <textarea class="form-control" id="site_aciklama" name="site_aciklama" rows="4"><?= htmlspecialchars($ayar["site_aciklama"]) ?></textarea>
     </div>
     <div class="mb-3">
         <label class="form-label">Logo</label>

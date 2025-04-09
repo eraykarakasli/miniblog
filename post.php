@@ -38,9 +38,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["yorum"])) {
     $baglanti->query("INSERT INTO comments (post_id, isim, yorum) VALUES ($post_id, '$isim', '$yorum')");
 
 
-    // Yönlendirme ile tekrar gönderimi engelle
-    header("Location: post.php?slug=" . urlencode($yazi["slug"]) . "&yorum=ok#yorum-formu");
-    exit;
+  
 }
 ?>
 

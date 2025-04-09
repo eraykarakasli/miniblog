@@ -9,7 +9,12 @@
     <title><?= htmlspecialchars($site_ayar["site_baslik"]) ?>-Dashboard</title>
     <link rel="icon" href="<?= $site_ayar["favicon"] ?>" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
+        .ck-editor__editable {
+            min-height: 300px;
+        }
+  
         html {
             scroll-behavior: smooth;
         }
@@ -30,11 +35,12 @@
                         Seçenekler
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="adminMenu">
-                        <li><a class="dropdown-item" href="kategoriler.php">📁 Kategoriler</a></li>
-                        <li><a class="dropdown-item" href="new_post.php">➕ Yeni Yazı</a></li>
-                        <li><a class="dropdown-item" href="ayarlar.php">⚙️ Blog Ayarları</a></li>
-                        <li><a class="dropdown-item" href="sayfalar.php">➕ Sayfalar</a></li>
-                        <li><a class="dropdown-item" href="yorumlar.php">💬 Yorumlar</a></li>
+                        <li><a class="dropdown-item" href="kategoriler.php">Kategoriler</a></li>
+                        <li><a class="dropdown-item" href="new_post.php">Yeni Yazı</a></li>
+                        <li><a class="dropdown-item" href="sayfalar.php">Sayfalar</a></li>
+                        <li><a class="dropdown-item" href="yorumlar.php">Yorumlar</a></li>
+                        <li><a class="dropdown-item" href="sifre_guncelle.php">Şifre Değiştir</a></li>
+                        <li><a class="dropdown-item" href="ayarlar.php">Blog Ayarları</a></li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
