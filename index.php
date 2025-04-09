@@ -2,14 +2,22 @@
 include "admin/includes/config.php";
 include "includes/visitor_header.php";
 
+// Veritabanı bağlantısını kontrol et
+if ($baglanti->connect_error) {
+    die("Veritabanı bağlantı hatası: " . $baglanti->connect_error);
+}
+
+// Slider için yazıları al
+$slider_yazilar = $baglanti->query("SELECT * FROM posts WHERE durum = 'yayinda' AND gorsel IS NOT NULL ORDER BY eklenme_tarihi DESC LIMIT 5");
+
 // En çok okunan 5 yazıyı al
 $populer_yazilar = $baglanti->query("SELECT id, baslik, goruntulenme, slug FROM posts WHERE durum = 'yayinda' ORDER BY goruntulenme DESC LIMIT 10");
 
 // Yalnızca yayındaki ve filtreye göre yazılar
-$kosul = "";
+$kosul = "WHERE durum = 'yayinda'";
 if (isset($_GET["kategori"])) {
     $kategori = $baglanti->real_escape_string($_GET["kategori"]);
-    $kosul = "WHERE kategori = '$kategori'";
+    $kosul .= " AND kategori = '$kategori'";
 }
 
 $yazilar = $baglanti->query("SELECT * FROM posts $kosul ORDER BY eklenme_tarihi DESC");
@@ -26,7 +34,6 @@ function kategoriBadgeRenk($kategori)
     };
 }
 ?>
-
 
 <?php if ($slider_yazilar->num_rows > 0): ?>
     <div id="slider" class="carousel slide mb-4" data-bs-ride="carousel">
@@ -64,24 +71,26 @@ function kategoriBadgeRenk($kategori)
         <div class="d-flex justify-content-between col-12">
             <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4 col-8">
                 <?php while ($yazi = $yazilar->fetch_assoc()): ?>
-                    <div class="col">
-                        <div class="card shadow-sm border-0 rounded-4 overflow-hidden mb-4 h-100">
-                            <?php if (!empty($yazi["gorsel"])): ?>
-                                <img src="<?= "./admin/" . $yazi["gorsel"] ?>" class="card-img-top" alt="..." style="height: 200px; object-fit: cover;">
-                            <?php endif; ?>
-                            <div class="card-body">
-                                <h5 class="card-title"><?= htmlspecialchars($yazi["baslik"]) ?></h5>
+                    <?php if ($yazi["durum"] == "yayinda"): ?>
+                        <div class="col">
+                            <div class="card shadow-sm border-0 rounded-4 overflow-hidden mb-4 h-100">
+                                <?php if (!empty($yazi["gorsel"])): ?>
+                                    <img src="<?= "./admin/" . $yazi["gorsel"] ?>" class="card-img-top" alt="..." style="height: 200px; object-fit: cover;">
+                                <?php endif; ?>
+                                <div class="card-body">
+                                    <h5 class="card-title"><?= htmlspecialchars($yazi["baslik"]) ?></h5>
 
-                                <span class="badge <?= kategoriBadgeRenk($yazi["kategori"]) ?>">
-                                    <?= $yazi["kategori"] ?>
-                                </span>
-                                <p class="card-text mt-2">
-                                <p class="card-text"><?= mb_substr(strip_tags($yazi["icerik"]), 0, 120) ?>...</p>
-                                </p>
-                                <a href="post.php?slug=<?= $yazi["slug"] ?>" class="btn btn-primary btn-sm mt-2">Devamını Oku</a>
+                                    <span class="badge <?= kategoriBadgeRenk($yazi["kategori"]) ?>">
+                                        <?= $yazi["kategori"] ?>
+                                    </span>
+                                    <p class="card-text mt-2">
+                                    <p class="card-text"><?= mb_substr(strip_tags($yazi["icerik"]), 0, 120) ?>...</p>
+                                    </p>
+                                    <a href="post.php?slug=<?= $yazi["slug"] ?>" class="btn btn-primary btn-sm mt-2">Devamını Oku</a>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    <?php endif; ?>
                 <?php endwhile; ?>
             </div>
             <div class="mt-5 col-4">

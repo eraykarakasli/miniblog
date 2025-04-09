@@ -128,28 +128,3 @@ $kategoriler = $baglanti->query("SELECT * FROM kategoriler");
   </div>
 
   <div class="container">
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Tüm dropdown menüleri seç
-    const dropdowns = document.querySelectorAll('.dropdown');
-    
-    // Her dropdown için hover olaylarını ekle
-    dropdowns.forEach(dropdown => {
-        // Mouse üzerine geldiğinde
-        dropdown.addEventListener('mouseenter', function() {
-            const dropdownMenu = this.querySelector('.dropdown-menu');
-            dropdownMenu.classList.add('show');
-        });
-        
-        // Mouse ayrıldığında
-        dropdown.addEventListener('mouseleave', function() {
-            const dropdownMenu = this.querySelector('.dropdown-menu');
-            dropdownMenu.classList.remove('show');
-        });
-    });
-});
-</script>
-
-</body>
-</html>
